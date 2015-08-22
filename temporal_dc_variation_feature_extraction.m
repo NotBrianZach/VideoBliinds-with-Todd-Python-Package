@@ -54,7 +54,7 @@ for x=1:size(frames,3)-1
     [motion_vects16x16(:,:,x) temp] = motionEstNTSS(imgP,imgI,mblock,7);
     toc
 end
-save('~/Desktop/VideoBliinds/matlabvects','motion_vects16x16');
+save('~/vbliindTrainingOutput/matlabvects','motion_vects16x16');
 
 mbsize = 16;
 row = size(frames,1);

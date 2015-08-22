@@ -1,4 +1,3 @@
-
 filenames = dir([arg1 '/*.bmp']); %# get information of all .bmp files in work dir
 n  = numel(filenames);    %# number of .bmp files
 
@@ -18,7 +17,7 @@ for i = 1:n %/200
     %# gets full path, filename radical and extension
     [fpath radical ext] = fileparts( filenames(i).name ); 
 end
-    save(['frames.mat'], 'im');                          
+save(['frames.mat'], 'im');                          
 
 % x = load([radical);
 % y = load("filename1.mat"_);

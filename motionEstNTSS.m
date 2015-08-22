@@ -247,7 +247,7 @@ for i = 1 : mbSize : row-mbSize+1
     end
 end
 
-save('~/Desktop/VideoBliinds/matlabout','overallcosts');
+save('~/vbliindTrainingOutput/matlabout','overallcosts');
 
 motionVect = vectors;
 NTSScomputations = computations/(mbCount - 1);

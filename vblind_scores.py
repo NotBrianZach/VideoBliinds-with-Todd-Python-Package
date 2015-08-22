@@ -1,18 +1,18 @@
-import pylab as py
-import numpy as np
+#import pylab as py
+#import numpy as np
 import glob
 import os
 import re
 import sklearn
-import scipy
-import scipy as sp
-import scipy.io
-import scipy.optimize as opt
+#import scipy
+#import scipy as sp
+#import scipy.io
+#import scipy.optimize as opt
 import sys
 from sklearn.externals import joblib
 
 
-from sklearn import svm, datasets, ensemble
+#from sklearn import svm, datasets, ensemble
 
 filePath = os.path.dirname(os.path.abspath(__file__))
 a_vblind = 67.14762
@@ -42,13 +42,20 @@ y_sd = joblib.load('video_bliinds_model_label_sd.pkl')
 #read in the scores
 #fpath='/home/kingston/code/video_bliinds/output2/'
 #opath='/home/kingston/repositories/video_proc/quality/video_blinds/'
-fpath='/Users/brian/Downloads/VideoBLIINDS_Code_MicheleSaad/'
-opath='/Users/brian/'
-
+#fpath='/Users/brian/Downloads/VideoBLIINDS_Code_MicheleSaad/'
+#opath='/Users/brian/'
+fpath='~/vbliindTrainingOutput/'
+fpath=os.path.expanduser(fpath)
+opath='~/vbliindTrainingOutput/'
+opath=os.path.expanduser(opath)
 #print sys.argv[1]#should be dir path to file
 #print sys.argv[1][13:]#should be dir path to file
 
+print fpath
 items = glob.glob(fpath + '*.txt')
+print items
+#features_file = open('~/vbliindTrainingOutput/features_test.txt','r')
+#print features_file
 items = sorted_nicely(items)
 for t in items:
     bname = os.path.basename(t)
