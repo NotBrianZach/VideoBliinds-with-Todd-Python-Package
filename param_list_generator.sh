@@ -6,5 +6,5 @@ mon_dirs=(${mon_dirs[@]})
 #output_dir=$SCRATCH/movieRound2
 for ((j=0;j<${#mon_dirs[@]};j++));
 do 
-    echo "./runMatlab.sh ${mon_dirs[$j]}" >> matlab_param_list
+    echo "./runMatlab.sh ${mon_dirs[$j]} ${j}" >> matlab_param_list
 done

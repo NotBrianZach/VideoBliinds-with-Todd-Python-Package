@@ -48,7 +48,8 @@ fpath='~/vbliindTrainingOutput/'
 fpath=os.path.expanduser(fpath)
 opath='~/vbliindTrainingOutput/'
 opath=os.path.expanduser(opath)
-#print sys.argv[1]#should be dir path to file
+#print sys.argv[1]#should be dir path to file and also unique run number
+#TODO split on spaces?sys.argv[1].split("")
 #print sys.argv[1][13:]#should be dir path to file
 
 print fpath
@@ -60,7 +61,7 @@ items = sorted_nicely(items)
 for t in items:
     bname = os.path.basename(t)
     #bname = bname.replace('feats', 'score')
-    bname = bname.replace('features_test', 'vscore' + sys.argv[1][13:])
+    bname = bname.replace('features_test', 'vscore')
     oname = opath + bname
     
     fi = open(t, 'r')

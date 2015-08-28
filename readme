@@ -1,0 +1,84 @@
+Files and run order:
+./param_generator_movies.sh to generate matlab_param_list file
+./split_param_file.sh to split the parameter file
+make sure to load matlab module, you'll need to change some paths in the files as well,
+./grep vbliindTrainingOutput *       <----this should show you paths you need to change, could do VideoBliinds-with-Todd-Python as well
+./mult_matlab_launcher.sh   <--- this will launch a bunch of jobs with all the split up param files. outputting feature files to whatever directory you specify
+
+
+
+in order to build score components table:
+./vbliind_html_out.py   <---- will output vbliindComponentScoreTable.html if feature files are present.
+
+
+
+
+Files and what they do, kind've, with some random interesting segments included:
+
+sbatch launcher.slurm
+runs commands in matlab_param_list file
+runs runMatlab.sh 
+runs matLoaderTestMovie.m which generates ./frames.mat <--this is a dependent file
+video_bliinds_algo.m:
+    load('frames.mat'); <---- this line would also need to be changed
+    diary('~/vbliindTrainingOutput/moutput')
+    niqe_features = compute_niqe_features(frames); <-- nothing here, only input file is independent
+    dt_dc_measure1 = temporal_dc_variation_feature_extraction(frames) <---- save('~/vbliindTrainingOutput/matlabvects','motion_vects16x16');
+    [dt_dc_measure2 geo_ratio_features] = NSS_spectral_ratios_feature_extraction(frames); <--nothing here
+    [mean_Coh10x10 G] = motion_feature_extraction(frames); 
+    
+    features_test = [niqe_features log(1+dt_dc_measure1) log(1+dt_dc_measure2) log(1+geo_ratio_features) log(1+mean_Coh10x10) log(1+G)];
+    
+    fid = fopen('~/vbliindTrainingOutput/features_test.txt', 'w+');
+    %then print features test to the file
+
+in compute_niqe_features.m:
+    function niqe_features = compute_niqe_features(frames)
+    load('frames_modelparameters.mat')
+
+
+
+
+My thoughts:
+in order to parallelize the algo, must make all "dependent" files "independent" 
+e.g. by attatching a unique number to file in each run.
+
+steps in algorithm and dependent files:
+
+run param_generator_movies.sh to generate matlab_param_list file
+sbatch launcher.slurm
+runs commands in matlab_param_list file
+runs runMatlab.sh
+runs matLoaderTestMovie.m which generates ./frames.mat <--this is a dependent file
+and then video_bliinds_algo.m:
+    load('frames.mat'); <---- this line would also need to be changed
+    diary('~/vbliindTrainingOutput/moutput')
+    niqe_features = compute_niqe_features(frames); <-- nothing here, only input file is independent
+    dt_dc_measure1 = temporal_dc_variation_feature_extraction(frames) <---- save('~/vbliindTrainingOutput/matlabvects','motion_vects16x16');
+    [dt_dc_measure2 geo_ratio_features] = NSS_spectral_ratios_feature_extraction(frames); <--nothing here
+    [mean_Coh10x10 G] = motion_feature_extraction(frames); 
+    
+    features_test = [niqe_features log(1+dt_dc_measure1) log(1+dt_dc_measure2) log(1+geo_ratio_features) log(1+mean_Coh10x10) log(1+G)];
+    
+    fid = fopen('~/vbliindTrainingOutput/features_test.txt', 'w+');
+    %then print features test to the file
+
+in compute_niqe_features.m:
+    function niqe_features = compute_niqe_features(frames)
+    load('frames_modelparameters.mat')
+
+
+need to modify features_test file output by video_bliinds_algo.m to be unique,
+then modify vblind_scores.py to grab the appropriate file from input arguments
+as well as modify necessary paths in that file,
+and then after the job is finished run vbliind_html_out.py once to aggregate 
+everything into an html file.
+However I also need to pass in some kind of argument to vbliind_html_out.py,
+which was originally table.py and designed to run in sequence with video_bliinds_algo.m -
+it was run from the command line and bash grabbed the name of the video before feeding video_bliinds,
+then later fed it into vbliind_html_out.py
+
+
+How to duplicate behavior here?
+think I did it by appending basename to the feature file output by video_bliinds_algo.m
+after I get the data into the table, then I need to extract it and read it into calibrate_features.py
